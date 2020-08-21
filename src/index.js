@@ -27,4 +27,6 @@ matrix2.setContent([
 // result.draw();
 // var resultT = matrixCalculator.transpose(matrix);
 // resultT.draw();
-console.log(matrixCalculator.determinant(matrix2));
+var result = matrixCalculator.multiply(matrix, matrix1);
+result.draw();
+console.log(matrixCalculator.getDeterminant(matrix2));

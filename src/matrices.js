@@ -20,18 +20,18 @@ export function Matrix(rowsNumber, colsNumber) {
     },
     get(row, col) {
       //using 'this' as the current object
-      if (this.countRows() < row || row < 0) {
-        throw new Error(`Rows should be between 0 and ${this.countRows()}`);
+      if (typeof row == 'undefined' || this.countRows() < row || row < 0) {
+        throw new Error(`Rows must be between 0 and ${this.countRows() - 1}`);
       }
-      if (this.countCols() < col || col < 0) {
-        throw new Error(`Cols should be between 0 and ${this.countCols()}`);
+      if (typeof col == 'undefined' || this.countCols() < col || col < 0) {
+        throw new Error(`Cols must be between 0 and ${this.countCols() - 1}`);
       }
       return content[row][col];
     },
     getRow(row) {
-      if (publicAPI.countRows() < row || row < 0) {
+      if (typeof row == 'undefined' || publicAPI.countRows() < row || row < 0) {
         throw new Error(
-          `Rows should be between 0 and ${publicAPI.countRows()}`
+          `Rows must be between 0 and ${publicAPI.countRows() - 1}`
         );
       }
       return content[row];
@@ -41,14 +41,18 @@ export function Matrix(rowsNumber, colsNumber) {
     },
     setContent(inputContent) {
       if (!Array.isArray(inputContent)) {
-        throw new Error('Input content should be an Array');
+        throw new Error('Input content must be an Array');
       }
       if (inputContent.length != this.countRows()) {
-        throw new Error('Rows should be equals to initial rows');
+        throw new Error('Rows must be equals to initial rows');
       }
       for (const row of inputContent) {
         if (row.length != this.countCols()) {
-          throw new Error('Cols should be equals to initial cols');
+          throw new Error('Cols must be equals to initial cols');
+        }
+        var NaNFiltered = row.filter((col) => isNaN(Number(col)));
+        if (NaNFiltered.length > 0) {
+          throw new Error('Elements must be numbers');
         }
       }
       content = [...inputContent];
@@ -64,8 +68,11 @@ export function Matrix(rowsNumber, colsNumber) {
 export function MatrixCalculator() {
   var publicAPI = {
     add(matrix1, matrix2) {
+      if (!matrix1 || !matrix2) {
+        throw new Error('You must provide two matrices');
+      }
       if (!haveSameDimensions(matrix1, matrix2)) {
-        throw new Error('Matrices should have the same dimensions');
+        throw new Error('Matrices must have the same dimensions');
       }
       var newContent = [];
       for (var [rowIndex, row] of matrix1.entries()) {
@@ -82,15 +89,18 @@ export function MatrixCalculator() {
       return result;
     },
     multiply(matrix1, matrix2) {
+      if (!matrix1 || !matrix2) {
+        throw new Error('You must provide two matrices');
+      }
       if (!numOfRowsEqualsToNumOfColumns(matrix1, matrix2)) {
         throw new Error(
-          'Matrix1 should have the same # of rows than columns of Matrix2'
+          'Matrix1 must have the same number of rows than columns of Matrix2'
         );
       }
       var newContent = [];
       for (const row of matrix1.getContent()) {
         var newRow = [];
-        for (const colIndex of Object.keys(row)) {
+        for (const colIndex of Object.keys(matrix2.getRow(0))) {
           let currentColValue = 0;
           for (const [currentColIndex, col] of row.entries()) {
             currentColValue += col * matrix2.get(currentColIndex, colIndex);
@@ -104,8 +114,11 @@ export function MatrixCalculator() {
       return result;
     },
     multiplyByScalar(matrix, scalar) {
+      if (!matrix) {
+        throw new Error('You must provide a matrix');
+      }
       if (isNaN(Number(scalar))) {
-        throw new Error('The second parameter should be scalar');
+        throw new Error('The second parameter must be scalar');
       }
       var newContent = [];
       for (const row of matrix.getContent()) {
@@ -119,7 +132,10 @@ export function MatrixCalculator() {
       result.setContent(newContent);
       return result;
     },
-    transpose(matrix) {
+    getTranspose(matrix) {
+      if (!matrix) {
+        throw new Error('You must provide a matrix');
+      }
       var newContent = [];
       for (let i = 0; i < matrix.countCols(); i++) {
         var newRow = [];
@@ -132,9 +148,12 @@ export function MatrixCalculator() {
       result.setContent(newContent);
       return result;
     },
-    determinant(matrix) {
+    getDeterminant(matrix) {
+      if (!matrix) {
+        throw new Error('You must provide a matrix');
+      }
       if (!isSquaredMatrix(matrix)) {
-        throw new Error('should be a squared matrix');
+        throw new Error('must be a squared matrix');
       }
       if (matrix.countRows() == 1) {
         return matrix.get(0, 0);
@@ -161,7 +180,7 @@ export function MatrixCalculator() {
         );
         provitionalMatrix.setContent(provisionalContent);
         const sign = colIndex % 2 == 0 ? 1 : -1;
-        result += col * this.determinant(provitionalMatrix) * sign;
+        result += col * this.getDeterminant(provitionalMatrix) * sign;
       }
       return result;
     },
@@ -177,7 +196,7 @@ export function MatrixCalculator() {
     return true;
   }
   function numOfRowsEqualsToNumOfColumns(matrix1, matrix2) {
-    if (matrix1.countRows() != matrix2.countCols()) {
+    if (matrix1.countCols() != matrix2.countRows()) {
       return false;
     }
     return true;
