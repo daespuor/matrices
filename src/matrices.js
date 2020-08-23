@@ -5,6 +5,7 @@ import {
   clearContainer,
 } from './ui-utils';
 
+//This module manage the modifications over the matrix content
 export function Matrix(rowsNumber, colsNumber) {
   if (isNaN(rowsNumber) || isNaN(colsNumber)) {
     throw new Error('Rows and Columns must be numbers');
@@ -13,9 +14,8 @@ export function Matrix(rowsNumber, colsNumber) {
     throw new Error('Rows and Columns must be greater than cero');
   }
   var columns = new Array(colsNumber).fill(0);
-  var content = new Array(rowsNumber).fill(columns);
+  var content = new Array(rowsNumber).fill(columns); //Methods below are closed over content variable
   var publicAPI = {
-    //the methods below are closing about content
     entries() {
       return content.entries();
     },
@@ -86,6 +86,7 @@ export function Matrix(rowsNumber, colsNumber) {
   return publicAPI;
 }
 
+//This module manage the operations with matrices
 export function MatrixCalculator() {
   var publicAPI = {
     add(matrix1, matrix2) {
