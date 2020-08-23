@@ -6,7 +6,7 @@ import {
 } from './ui-utils';
 
 export function Matrix(rowsNumber, colsNumber) {
-  if (typeof rowsNumber != 'number' || typeof colsNumber != 'number') {
+  if (isNaN(rowsNumber) || isNaN(colsNumber)) {
     throw new Error('Rows and Columns must be numbers');
   }
   if (rowsNumber <= 0 || colsNumber <= 0) {
@@ -65,15 +65,17 @@ export function Matrix(rowsNumber, colsNumber) {
       content = inputContent.map((row) => row.map((col) => Number(col)));
     },
     draw(containerID) {
-      clearContainer(containerID);
-      var contentMatrix = selectContainer(containerID);
-      for (const row of this.getContent()) {
-        var contentRow = createUIRow();
-        for (const col of row) {
-          var contentCol = createUICol(col);
-          contentRow.appendChild(contentCol);
+      if (containerID) {
+        clearContainer(containerID);
+        var contentMatrix = selectContainer(containerID);
+        for (const row of this.getContent()) {
+          var contentRow = createUIRow();
+          for (const col of row) {
+            var contentCol = createUICol(col);
+            contentRow.appendChild(contentCol);
+          }
+          contentMatrix.appendChild(contentRow);
         }
-        contentMatrix.appendChild(contentRow);
       }
     },
     print() {
