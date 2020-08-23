@@ -5,6 +5,7 @@
 Open your shell
 First type `npm install`
 Second type `npm run dev`
+Go to `localhost:1234`
 
 ##How the application works?
 
