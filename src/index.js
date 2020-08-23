@@ -1,32 +1,98 @@
 import { Matrix, MatrixCalculator } from './matrices';
+import { selectContainer, clearContainer } from './ui-utils';
+import { ADD, MULTIPLY } from './constances';
 
-var matrixCalculator = MatrixCalculator();
-var matrix = Matrix(3, 3);
-var matrix1 = Matrix(3, 2);
-var matrix2 = Matrix(5, 5);
-matrix.setContent([
-  [22, 0, 2],
-  [22, 0, 6],
-  [2, 3, 10],
-]);
+(function () {
+  var matrix;
+  var secondMatrix;
+  var actionType = '';
+  var matrixForm = document.getElementById('matrix_form');
+  var addButton = document.getElementById('add');
+  var multiplyButton = document.getElementById('multiply');
+  var multiplyByScalarButton = document.getElementById('multiply_by_scalar');
+  var transposeButton = document.getElementById('get_transpose');
+  var determinantButton = document.getElementById('get_determinant');
+  var equalsButton = document.getElementById('equals');
 
-matrix1.setContent([
-  [2, 2],
-  [10, 1],
-  [-1, 0],
-]);
+  matrixForm.addEventListener('submit', function handleSubmit(event) {
+    event.preventDefault();
+    handleReset();
+    var rows = document.getElementById('rows').value;
+    var cols = document.getElementById('cols').value;
+    matrix = Matrix(Number(rows), Number(cols));
+    matrix.draw('.content__matrix');
+  });
+  matrixForm.addEventListener('reset', handleReset);
+  addButton.addEventListener('click', function handleAdd() {
+    if (matrix) {
+      secondMatrix = Matrix(matrix.countRows(), matrix.countCols());
+      secondMatrix.draw('.content__second-matrix');
+      selectContainer('.content__equals').classList.add('showEquals');
+      actionType = ADD;
+    }
+  });
+  multiplyButton.addEventListener('click', function handleMultiply() {
+    if (matrix) {
+      secondMatrix = Matrix(matrix.countCols(), matrix.countRows());
+      secondMatrix.draw('.content__second-matrix');
+      selectContainer('.content__equals').classList.add('showEquals');
+      actionType = MULTIPLY;
+    }
+  });
+  equalsButton.addEventListener('click', function handleEquals() {
+    var matrixCalculator = MatrixCalculator();
+    switch (actionType) {
+      case ADD: {
+        if (secondMatrix && matrix) {
+          matrix = setMatrixContent(matrix, '.content__matrix');
+          secondMatrix = setMatrixContent(
+            secondMatrix,
+            '.content__second-matrix'
+          );
+          var result = matrixCalculator.add(matrix, secondMatrix);
+          result.draw('.content__result');
+        }
+        break;
+      }
+      case MULTIPLY: {
+        if (secondMatrix && matrix) {
+          matrix = setMatrixContent(matrix, '.content__matrix');
+          secondMatrix = setMatrixContent(
+            secondMatrix,
+            '.content__second-matrix'
+          );
+          var result = matrixCalculator.multiply(matrix, secondMatrix);
+          result.draw('.content__result');
+        }
+        break;
+      }
+      default:
+        console.log('Invalid Action');
+    }
+  });
+  function handleReset() {
+    clearContainer('.content__matrix');
+    clearContainer('.content__second-matrix');
+    clearContainer('.content__result');
+    selectContainer('.content__equals').classList.remove('showEquals');
+  }
 
-matrix2.setContent([
-  [5, -2, 10, 1, 1],
-  [22, 0, 0, 2, 56],
-  [22, 0, 0, 6, 10],
-  [2, 1, 3, 10, -5],
-  [2, 1, -3, -10, 5],
-]);
-// var result = matrixCalculator.multiplyByScalar(matrix, -1);
-// result.draw();
-// var resultT = matrixCalculator.transpose(matrix);
-// resultT.draw();
-var result = matrixCalculator.multiply(matrix, matrix1);
-result.draw();
-console.log(matrixCalculator.getDeterminant(matrix2));
+  function setMatrixContent(matrix, containerID) {
+    if (matrix) {
+      var contentMatrix = selectContainer(containerID);
+      var rowElements = contentMatrix.childNodes;
+      var rows = [];
+      for (const rowElement of rowElements) {
+        var colElements = rowElement.childNodes;
+        var cols = [];
+        for (const colElement of colElements) {
+          var colInput = colElement.childNodes[0];
+          cols.push(colInput.value);
+        }
+        rows.push(cols);
+      }
+      matrix.setContent(rows);
+    }
+    return matrix;
+  }
+})();

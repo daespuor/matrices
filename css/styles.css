@@ -1,0 +1,69 @@
+@font-face {
+  font-family: Roboto;
+  src: url('../fonts/Roboto-Regular.ttf');
+}
+* {
+  box-sizing: border-box;
+  font-family: Roboto, sans-serif;
+}
+.wrapper {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 40px auto;
+  width: 80%;
+}
+.controls {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: repeat(2, 1fr);
+  padding: 15px;
+  font-size: 14px;
+}
+.controls h2 {
+  font-size: 15px;
+}
+.controls__initialization input {
+  width: 70px;
+  margin: 10px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  padding: 5px;
+}
+button {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.button--primary {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+.content {
+  display: grid;
+  grid-template-columns: repeat(2, 30%) 10% 30%;
+  grid-template-rows: 1fr;
+  margin-top: 20px;
+}
+.content__matrix,
+.content__equals,
+.content__result,
+.content__second-matrix {
+  margin: 20px;
+}
+.content__equals {
+  display: none;
+}
+.showEquals {
+  display: block;
+}
+.row {
+  display: flex;
+  flex-wrap: nowrap;
+}
+.col input {
+  width: 100%;
+  border: 1px solid #ccd;
+}

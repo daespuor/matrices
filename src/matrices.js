@@ -1,3 +1,10 @@
+import {
+  createUIRow,
+  createUICol,
+  selectContainer,
+  clearContainer,
+} from './ui-utils';
+
 export function Matrix(rowsNumber, colsNumber) {
   if (typeof rowsNumber != 'number' || typeof colsNumber != 'number') {
     throw new Error('Rows and Columns must be numbers');
@@ -55,9 +62,21 @@ export function Matrix(rowsNumber, colsNumber) {
           throw new Error('Elements must be numbers');
         }
       }
-      content = [...inputContent];
+      content = inputContent.map((row) => row.map((col) => Number(col)));
     },
-    draw() {
+    draw(containerID) {
+      clearContainer(containerID);
+      var contentMatrix = selectContainer(containerID);
+      for (const row of this.getContent()) {
+        var contentRow = createUIRow();
+        for (const col of row) {
+          var contentCol = createUICol(col);
+          contentRow.appendChild(contentCol);
+        }
+        contentMatrix.appendChild(contentRow);
+      }
+    },
+    print() {
       console.log(content);
     },
   };
