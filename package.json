@@ -6,7 +6,8 @@
   "scripts": {
     "transpile": "npx babel src --out-dir ./dist",
     "start": "npm run transpile && node ./dist/index.js",
-    "dev": "parcel index.html"
+    "dev": "parcel index.html",
+    "build": "parcel build index.html"
   },
   "keywords": [],
   "author": "",
